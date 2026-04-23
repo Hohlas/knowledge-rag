@@ -33,6 +33,13 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
+import builtins
+import sys
+
+def print(*args, **kwargs):
+    kwargs.setdefault("file", sys.stderr)
+    return builtins.print(*args, **kwargs)
+
 # ChromaDB
 import chromadb
 

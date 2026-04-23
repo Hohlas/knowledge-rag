@@ -7,6 +7,13 @@ from typing import Dict, List
 
 import yaml
 
+import builtins
+import sys
+
+def print(*args, **kwargs):
+    kwargs.setdefault("file", sys.stderr)
+    return builtins.print(*args, **kwargs)
+
 # ============================================================================
 # BASE DIRECTORY RESOLUTION
 # ============================================================================

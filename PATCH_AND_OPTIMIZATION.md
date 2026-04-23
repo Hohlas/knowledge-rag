@@ -5,22 +5,22 @@
 ---
 
 ## 1. Исправление стабильности MCP (stdout protection)
-**Файл:** `mcp_server/__init__.py`
+**Файлы:** `mcp_server/config.py`, `mcp_server/ingestion.py`, `mcp_server/server.py`
 
-MCP-протокол использует `stdout` для передачи JSON-сообщений. Если любая библиотека или часть кода вызовет `print()`, это приведет к ошибке «Failed to connect».
+MCP-протокол использует `stdout` для передачи JSON-сообщений. Любой диагностический `print()` в сервере может повредить stdio-поток и сорвать handshake.
 
-**Решение:** Глобальное перенаправление всех вызовов `print()` в `stderr`.
+**Актуальное решение:** локально перенаправлять `print()` в `stderr` только в модулях `knowledge-rag`, где есть диагностический вывод. Глобальная подмена `builtins.print` в `mcp_server/__init__.py` удалена: она слишком широкая, затрагивает код MCP SDK и сторонних библиотек и может приводить к зависанию stdio-handshake.
 
 ```python
-import sys
 import builtins
+import sys
 
-_orig_print = builtins.print
-def _stderr_print(*args, **kwargs):
-    kwargs.setdefault('file', sys.stderr)
-    _orig_print(*args, **kwargs)
-builtins.print = _stderr_print
+def print(*args, **kwargs):
+    kwargs.setdefault("file", sys.stderr)
+    return builtins.print(*args, **kwargs)
 ```
+
+**Важно:** не возвращать глобальный monkey-patch `builtins.print = ...` в `__init__.py`. Защиту stdout нужно держать локальной и явной.
 
 ---
 
@@ -95,3 +95,61 @@ exclude_patterns:
   - "**/.git/**"
   - "**/.**"
 ```
+---
+
+## 7. Codex/SoSimple восстановление после сбоя MCP
+
+### Что было проверено
+
+- `codex mcp list` показывает только регистрацию MCP-сервера и не является функциональной проверкой.
+- `Auth: Unsupported` для stdio MCP — нормальный статус, а не ошибка.
+- Функциональная проверка — вызов инструмента, например:
+
+```text
+search_knowledge("entry_path_v1_quantile", hybrid_alpha=0.0, max_results=5)
+search_knowledge("triple barrier", hybrid_alpha=0.3, max_results=5)
+```
+
+Рабочий признак: MCP-клиент запрашивает разрешение на запуск `search_knowledge`, а ответ содержит `status: success` и результаты.
+
+### Текущая схема установки для Codex
+
+Codex запускает MCP через editable-установку локального исходника:
+
+```bash
+/home/hohla/knowledge-rag/venv/bin/python -m pip install --no-deps -e /home/hohla/git/knowledge-rag
+```
+
+В `~/.codex/config.toml` сервер должен оставаться stdio-сервером:
+
+```toml
+[mcp_servers.knowledge-rag]
+command = "/home/hohla/knowledge-rag/venv/bin/knowledge-rag"
+
+[mcp_servers.knowledge-rag.env]
+KNOWLEDGE_RAG_DIR = "/home/hohla/knowledge-rag"
+```
+
+### SoSimple runtime-конфиг
+
+Активный `config.yaml` для этой машины указывает:
+
+```yaml
+paths:
+  documents_dir: "/home/hohla/git/SoSimple"
+  data_dir: "/home/hohla/git/SoSimple/.knowledge-rag-data"
+  models_cache_dir: "./models_cache"
+```
+
+Причина переноса `data_dir` в `/home/hohla/git/SoSimple/.knowledge-rag-data`: Codex sandbox стабильно разрешает запись внутри workspace, а запись в `/home/hohla/knowledge-rag/data` из MCP-сессии может быть недоступна или зависеть от sandbox-настроек.
+
+`.knowledge-rag-data/` — runtime-хранилище индекса Chroma/BM25. Оно нужно для работы текущего конфига, но не должно попадать в git. В репозитории SoSimple оно должно быть добавлено в `.gitignore`.
+
+Для воспроизводимости SoSimple-конфиг также сохранен как `presets/sosimple.yaml`. Активный `config.yaml` по-прежнему считается локальным файлом и игнорируется стандартным `.gitignore` проекта `knowledge-rag`.
+
+### Чего не делать без необходимости
+
+- Не копировать бинарную ChromaDB/HNSW-базу между директориями: это уже приводило к segfault при открытии базы. Если нужен перенос — лучше выполнить reindex.
+- Не переустанавливать PyPI `knowledge-rag` поверх локального editable-патча. Это затирает локальные исправления.
+- Не откатывать `mcp`/`fastembed` наугад. Сначала проверять минимальным воспроизводимым тестом в отдельном venv.
+- Не считать `codex mcp list` доказательством работоспособности. Проверять именно `search_knowledge`.
