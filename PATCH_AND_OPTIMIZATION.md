@@ -153,3 +153,20 @@ paths:
 - Не переустанавливать PyPI `knowledge-rag` поверх локального editable-патча. Это затирает локальные исправления.
 - Не откатывать `mcp`/`fastembed` наугад. Сначала проверять минимальным воспроизводимым тестом в отдельном venv.
 - Не считать `codex mcp list` доказательством работоспособности. Проверять именно `search_knowledge`.
+---
+
+## 8. Upstream status after reinstalling official v3.5.2
+
+As of the official `knowledge-rag==3.5.2` release, the production setup should prefer the upstream PyPI package over the local editable patch. The upstream package already includes the main fixes that were needed for Codex/SoSimple:
+
+- scoped stdout protection for MCP stdio;
+- persistent `models_cache_dir`;
+- `documents.exclude_patterns` with a shared exclusion helper;
+- proper `.ipynb` parsing that extracts markdown/code cell sources only;
+- `.mqh` and `.mq4` parser support;
+- inotify watcher fallback.
+
+The active SoSimple config was migrated to the upstream format by moving `exclude_patterns` under `documents:`. The reproducible preset is `presets/sosimple.yaml`.
+
+Keep the local runtime config at `/home/hohla/knowledge-rag/config.yaml`; keep the runtime index at `/home/hohla/git/SoSimple/.knowledge-rag-data`; do not commit either runtime data or ChromaDB files.
+

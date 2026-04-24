@@ -23,41 +23,42 @@ documents:
     chunk_size: 1000
     chunk_overlap: 200
 
-# Исключения — критически важно для проекта SoSimple
-exclude_patterns:
-  - "**/MT/MQL5/**"      # Исключаем MQL5 полностью
-  - "**/MT/tester/**"    # Исключаем тестер
-  - "**/MT/MQL4/Files/**"
-  - "**/MT/MQL4/Indicators/**"
-  - "**/MT/MQL4/Libraries/**"
-  - "**/MT/MQL4/Logs/**"
-  - "**/MT/MQL4/Profiles/**"
-  - "**/MT/MQL4/Scripts/**"
-  - "**/MT/MQL4/Trash/**"
-  - "**/.git/**"       # Git
-  - "**/.venv/**"      # Python Virtual Env
-  - "**/.**"           # Другие скрытые папки
-  - "**/node_modules/**"
-  - "**/dist/**"
-  - "**/build/**"
-  - "**/plots/**"      # Графики
-  - "**/checkpoints/**" # Чекпоинты моделей
-  - "**/archive/**"     # Архивные файлы
-  - "**/DATA/**"        # Папка с данными
-  - "**/__pycache__/**" # Кэш Python
-  - "**/*.log"         # Лог-файлы
-  - "**/*.csv"         # Датасеты
-  - "**/*.parquet"     # Данные
-  - "**/*.pkl"         # Сериализованные объекты
-  - "**/*.pt"          # Веса PyTorch
-  - "**/*.pth"
-  - "**/*.bin"
-  - "**/*.index"
-  - "**/*.png"         # Изображения
-  - "**/*.jpg"
-  - "**/*.jpeg"
-  - "**/*.json"
-  - "**/*.npy"
+  # Исключения — критически важно для проекта SoSimple
+  exclude_patterns:
+    - "**/MT/MQL5/**"      # Исключаем MQL5 полностью
+    - "**/MT/tester/**"    # Исключаем тестер
+    - "**/MT/MQL4/Files/**"
+    - "**/MT/MQL4/Indicators/**"
+    - "**/MT/MQL4/Libraries/**"
+    - "**/MT/MQL4/Logs/**"
+    - "**/MT/MQL4/Profiles/**"
+    - "**/MT/MQL4/Scripts/**"
+    - "**/MT/MQL4/Trash/**"
+    - "**/.git/**"       # Git
+    - "**/.venv/**"      # Python Virtual Env
+    - "**/.**"           # Другие скрытые папки
+    - "**/node_modules/**"
+    - "**/dist/**"
+    - "**/build/**"
+    - "**/plots/**"      # Графики
+    - "**/checkpoints/**" # Чекпоинты моделей
+    - "**/archive/**"     # Архивные файлы
+    - "**/DATA/**"        # Папка с данными
+    - "**/__pycache__/**" # Кэш Python
+    - "**/*.log"         # Лог-файлы
+    - "**/*.csv"         # Датасеты
+    - "**/*.parquet"     # Данные
+    - "**/*.pkl"         # Сериализованные объекты
+    - "**/*.pt"          # Веса PyTorch
+    - "**/*.pth"
+    - "**/*.bin"
+    - "**/*.index"
+    - "**/*.png"         # Изображения
+    - "**/*.jpg"
+    - "**/*.jpeg"
+    - "**/*.json"
+    - "**/*.npy"
+
 
 # ============================================================================
 # MODELS — ваш выбор
