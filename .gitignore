@@ -5,7 +5,7 @@ __pycache__/
 data/
 
 # User config (personal settings — use presets/ as starting point)
-config.yaml
+# config.yaml
 
 # Personal documents (NEVER commit — user-populated content)
 documents/aar/

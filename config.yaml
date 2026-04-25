@@ -1,0 +1,215 @@
+# ============================================================================
+# PATHS
+# ============================================================================
+paths:
+  documents_dir: "/home/hohla/git/SoSimple"
+  data_dir: "/home/hohla/git/SoSimple/.knowledge-rag-data"
+  models_cache_dir: "./models_cache"
+
+# ============================================================================
+# DOCUMENTS
+# ============================================================================
+documents:
+  # Файлы, которые будут проиндексированы
+  supported_formats:
+    - .md
+    - .txt
+    - .py
+    - .mqh
+    - .mq4
+    - .ipynb
+
+  chunking:
+    chunk_size: 1000
+    chunk_overlap: 200
+
+# Исключения — критически важно для проекта SoSimple
+exclude_patterns:
+  - "**/MT/MQL5/**"      # Исключаем MQL5 полностью
+  - "**/MT/tester/**"    # Исключаем тестер
+  - "**/MT/MQL4/Files/**"
+  - "**/MT/MQL4/Indicators/**"
+  - "**/MT/MQL4/Libraries/**"
+  - "**/MT/MQL4/Logs/**"
+  - "**/MT/MQL4/Profiles/**"
+  - "**/MT/MQL4/Scripts/**"
+  - "**/MT/MQL4/Trash/**"
+  - "**/.git/**"       # Git
+  - "**/.venv/**"      # Python Virtual Env
+  - "**/.**"           # Другие скрытые папки
+  - "**/node_modules/**"
+  - "**/dist/**"
+  - "**/build/**"
+  - "**/plots/**"      # Графики
+  - "**/checkpoints/**" # Чекпоинты моделей
+  - "**/archive/**"     # Архивные файлы
+  - "**/DATA/**"        # Папка с данными
+  - "**/__pycache__/**" # Кэш Python
+  - "**/*.log"         # Лог-файлы
+  - "**/*.csv"         # Датасеты
+  - "**/*.parquet"     # Данные
+  - "**/*.pkl"         # Сериализованные объекты
+  - "**/*.pt"          # Веса PyTorch
+  - "**/*.pth"
+  - "**/*.bin"
+  - "**/*.index"
+  - "**/*.png"         # Изображения
+  - "**/*.jpg"
+  - "**/*.jpeg"
+  - "**/*.json"
+  - "**/*.npy"
+
+# ============================================================================
+# MODELS — ваш выбор
+# ============================================================================
+models:
+  embedding:
+    model: "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
+    dimensions: 384
+
+  reranker:
+    enabled: true
+    model: "Xenova/ms-marco-MiniLM-L-6-v2"
+    top_k_multiplier: 3
+
+
+hybrid_alpha: 0.5
+
+# ============================================================================
+# SEARCH
+# ============================================================================
+search:
+  default_results: 5
+  max_results: 20
+  collection_name: "knowledge_base"
+
+# ============================================================================
+# CATEGORIES
+# ============================================================================
+category_mappings:
+  "wiki/research": "wiki_research"
+  "wiki/concepts": "wiki_concepts"
+  "docs/reports": "reports"
+  "docs/superpowers": "plans"
+  "docs/ML": "ml_docs"
+  "docs/MT": "mt_docs"
+  "docs/processing": "processing_docs"
+  "docs/statistics": "statistics_docs"
+  "ML": "ml"
+  "API": "api"
+  "MT/MQL4/Experts": "mql4"
+  "MT/MQL4/Include": "mql4"
+  "processing": "processing"
+  "statistics": "statistics"
+  "tests": "tests"
+
+
+keyword_routes:
+  wiki_research:
+    - "research"
+    - "исследование"
+    - "линия исследования"
+    - "evolution"
+    - "verdict"
+    - "вывод"
+    - "synthesis"
+
+  wiki_concepts:
+    - "concept"
+    - "концепт"
+    - "archetype"
+    - "архетип"
+    - "signal quality"
+    - "устойчивый вывод"
+
+  reports:
+    - "report"
+    - "отчёт"
+    - "stage"
+    - "этап"
+    - "verdict"
+    - "gate"
+    - "pass"
+    - "fail"
+    - "production-ready"
+    - "forward validation"
+
+  plans:
+    - "roadmap"
+    - "plan"
+    - "spec"
+    - "implementation plan"
+    - "next step"
+    - "execution improvement"
+
+  ml:
+    - "ML"
+    - "transformer"
+    - "bilstm"
+    - "cnn"
+    - "hybrid"
+    - "baseline"
+    - "conformal"
+    - "quantile"
+    - "entry_path"
+    - "entry_path_v1"
+    - "triple barrier"
+    - "tb"
+    - "updn"
+    - "fav"
+    - "prediction"
+    - "training"
+    - "benchmark"
+    - "profit factor"
+    - "PF"
+    - "threshold"
+    - "seed"
+
+  mql4:
+    - "mql4"
+    - "mq4"
+    - "mqh"
+    - "mt4"
+    - "expert"
+    - "advisor"
+    - "signals"
+    - "ml_signals"
+    - "ML_TRADE"
+    - "ML_TRADE_TB"
+    - "NERO_CSV_CREATE"
+    - "lib_PIC"
+
+  api:
+    - "api"
+    - "generate_signals"
+    - "export"
+    - "ml_signals.csv"
+    - "signal generation"
+    - "entry_path_v1_quantile_signals"
+
+  processing:
+    - "processing"
+    - "label"
+    - "normalize"
+    - "split"
+    - "sort"
+    - "Nero_labeled"
+    - "label_signals"
+    - "normalization"
+
+  statistics:
+    - "statistics"
+    - "EDA"
+    - "signal_tracer"
+    - "reconciliation"
+    - "trace"
+    - "diagnostic"
+
+  tests:
+    - "test"
+    - "pytest"
+    - "invariant"
+    - "smoke"
+    - "regression"
+    - "guard"
+
